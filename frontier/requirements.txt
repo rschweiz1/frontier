@@ -1,9 +1,0 @@
-jupyter
-numpy
-scipy
-scikit-learn
-matplotlib
-tensorflow
-pandas
-pandas-datareader
-tweepy
