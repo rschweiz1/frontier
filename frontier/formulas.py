@@ -5,7 +5,7 @@ from scipy.integrate import quad
 # Black-Scholes Formula (adapted from gosmej1977.blogspot.com)
 def d1(S0, K, r, sigma, T):
 	return (np.log(S0/K)+(r+sigma**2/2)*T)/(sigma*np.sqrt(T))
-	
+
 def d2(S0, K, r, sigma, T):
 	return (np.log(S0/K)+(r-sigma**2/2)*T)/(sigma*np.sqrt(T))
 
@@ -24,12 +24,8 @@ class option():
 		self.putask  = pa
 		self.putbid  = pb
 		self.putvol  = pv
-		
+
 		N = self.strike.size
-
-		for i in range (N):
-			print(BlackScholes(Otype,  self.price, self.strike[i], r, sigma, T))
-
 
 n  = 'Apple'
 p  = 157.41
@@ -45,10 +41,5 @@ r=0.001
 sigma = 0.23
 T = 1/12
 Otype = 'C'
- 
+
 AAPL_Nov10_2017 = option(n, p, s, ca, cb, cv, pa, pb, pv)
-
-
-
-
-
