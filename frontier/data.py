@@ -1,10 +1,9 @@
 import pandas_datareader.data as web
 import datetime, os
 
-
-
 def Share(ticker, source = 'google'):
-	return web.DataReader(ticker, source).to_csv(os.path.join(os.path.dirname(__file__), '..', 'database', 'ticker' + '.csv'))
+	name = web.DataReader(ticker, source)
+	name.to_csv(os.path.join(os.path.dirname(__file__), '..', 'database', '{}.csv'.format(ticker)))
 
 def Option(ticker, source = 'google'):
 	name = web.Options(ticker, source)
