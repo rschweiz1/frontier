@@ -1,14 +1,22 @@
+import pandas as pd
+import numpy as np
 import pandas_datareader.data as web
 import datetime, os
 
-def Share(ticker, source = 'google'):
+def Share(ticker, group, source = 'google'):
+
+# tpath is the path to the ticker symbol folder
+
+	tpath = os.path.join(os.path.dirname(__file__),
+	'..', 'database', '{}'.format(group), '{}.csv'.format(ticker))
+
+# Datareader retreives historical prices from google finance.
+
 	name = web.DataReader(ticker, source)
-	name.to_csv(os.path.join(os.path.dirname(__file__), '..', 'database', '{}.csv'.format(ticker)))
+	pchange = name['Close'].pct_change().rename('{} Percent Change'.format(ticker))
 
-def Option(ticker, source = 'google'):
-	name = web.Options(ticker, source)
-	#return name.get_all_data()
+# Add a percent change column to the DataFrame
 
-#def Update():
-	# Get most recent date of share csv file (pandas.read_csv)
-	# Use share function from day after to pre
+	name = pd.concat([name, pchange], axis = 1)
+	name.to_csv(tpath)
+	return pchange
