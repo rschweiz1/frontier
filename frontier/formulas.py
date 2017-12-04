@@ -1,9 +1,23 @@
-from pandas import read_csv
 import numpy as np
-import scipy.stats as  ss
+import pandas as pd
 import os
 
-# Covariance Calculation
+def Alpha(group):
+	df = pd.read_csv(os.path.join(os.path.dirname(__file__),
+	'..', 'database', '{}'.format(group), 'Compiled Data.csv'))
+	f = lambda x: np.prod(x+1) - 1 - np.std(x)/2
+	df.Date = pd.to_datetime(df.Date)
+	df.set_index('Date', inplace = True)
+	qcorr = df.groupby(pd.Grouper(freq = 'BQ')).corr()
+
+	qcorr.to_csv(os.path.join(os.path.dirname(__file__),
+	'..', 'database', 'machine data', 'Correlation By Quarter.csv'))
+
+	df = df.resample('BQ').apply(f)
+
+	df.to_csv(os.path.join(os.path.dirname(__file__),
+	'..', 'database', 'machine data', 'Quarterly Geometric Mean.csv'))
+
 
 # Black-Scholes Formula (adapted from gosmej1977.blogspot.com)
 def d1(S0, K, r, sigma, T):

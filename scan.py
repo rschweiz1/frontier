@@ -5,44 +5,24 @@ import os
 
 # Create Croup of Tickers
 
-indices = pd.Series(['JKD', 'IJH', 'IJR', 'JKF','IJS', 'ICF',
+BlackRock = pd.Series(['JKD', 'IJH', 'IJR', 'JKF','IJS', 'ICF',
                     'EFA', 'SCZ', 'EEM', 'SHV', 'IAU'])
 
-print('Updating Indices...')
+print('Updating BlackRock ETFs...')
 
 # Changesum is the compiled percent changes to put into the correlation matrix.
-
-changesum = pd.DataFrame(frontier.Share(indices[0], 'Indices'))
-
-# Path to filename.
-cpath = os.path.join(os.path.dirname(__file__),
-'database', 'Indices', 'Correlation Matrix.csv')
-
-
 # Pull the % change data for all ETF's, join the columns, and save to CSV.
+changesum = pd.DataFrame(frontier.Share(BlackRock[0], 'BlackRock'))
 
-for i in range(1, indices.size):
-    change = frontier.Share(indices[i], 'Indices')
+for i in range(1, BlackRock.size):
+    change = frontier.Share(BlackRock[i], 'BlackRock')
     changesum = pd.concat([changesum, change], axis=1)
 
-# Get correlation between asset classes. This is the data to be fed into the NN.
-
-correlation = changesum.corr()
-correlation.to_csv(cpath)
-
-print('Done.')
 
 
+changesum.to_csv(os.path.join(os.path.dirname(__file__),
+'database', 'BlackRock', 'Compiled Data.csv'))
 
-schwab = pd.Series(['SCHX', 'SCHM', 'SCHA', 'FNDX', 'FNDA', 'SCHH',
-                    'SCHF', 'SCHC', 'SCHE', 'FNDF', 'FNDC', 'FNDE',
-                    'SCHZ', 'SCHO', 'SGOL'])
-
-
-print('Updating Schwab Asset Classes...')
-
-for i in range(schwab.size):
-    change = frontier.Share(schwab[i], 'Schwab Asset Classes')
-
+frontier.Alpha('BlackRock')
 
 print('Done.')
