@@ -1,22 +1,40 @@
+import os
 import numpy as np
 import pandas as pd
-import os
+import pandas_datareader.data as web
+from numpy.linalg import inv
 
-def Alpha(group):
-	df = pd.read_csv(os.path.join(os.path.dirname(__file__),
-	'..', 'database', '{}'.format(group), 'Compiled Data.csv'))
-	f = lambda x: np.prod(x+1) - 1 - np.std(x)/2
-	df.Date = pd.to_datetime(df.Date)
-	df.set_index('Date', inplace = True)
-	qcorr = df.groupby(pd.Grouper(freq = 'BQ')).corr()
 
-	qcorr.to_csv(os.path.join(os.path.dirname(__file__),
-	'..', 'database', 'machine data', 'Correlation By Quarter.csv'))
+def gmvp(tickers,
+		start='1/1/2010',
+		end=pd.to_datetime('today'),
+		source='google'):
+	"""
+	Determines the portfolio's optimal asset weights for minimum variance.
 
-	df = df.resample('BQ').apply(f)
+	This formula is based off the proof that a portfolio's variance over time is
+	based solely off of the covariance matrix of it's underlying assets. This
+	method calculates the optimal weights, and theoretical returns, of any
+	combination of assets within the given time span.
+	"""
+	p = web.DataReader(tickers, source, start, end)
 
-	df.to_csv(os.path.join(os.path.dirname(__file__),
-	'..', 'database', 'machine data', 'Quarterly Geometric Mean.csv'))
+	logret = np.log(p.loc['Close']).diff()
+	grouped = logret.groupby(pd.Grouper(freq='BY'))
+
+	e = np.ones(logret.shape[1])
+
+	def f(x): return inv(x.cov()) @ e
+
+	def g(x): return pd.Series(x / (e @ x), index=logret.columns)
+
+	pweights = grouped.apply(f).apply(g)
+	georet = grouped.agg('sum').apply(lambda x: np.exp(x) - 1)
+
+	pret = (pweights * georet).sum(axis=1)
+
+	print(
+		'Estimated Return:\n{}\nPortfolio Weights:\n{}'.format(pret, pweights))
 
 
 # Black-Scholes Formula (adapted from gosmej1977.blogspot.com)
@@ -26,7 +44,7 @@ def d1(S0, K, r, sigma, T):
 def d2(S0, K, r, sigma, T):
 	return (np.log(S0/K)+(r-sigma**2/2)*T)/(sigma*np.sqrt(T))
 
-def BlackScholes(type, S0, K, r, sigma, T):
+def blackscholes(type, S0, K, r, sigma, T):
 	if type=="C":
 		return S0*ss.norm.cdf(d1(S0,K,r,sigma,T))-K*np.exp(-r*T)*ss.norm.cdf(d2(S0,K,r,sigma,T))
 

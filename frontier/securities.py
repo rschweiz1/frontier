@@ -1,22 +1,34 @@
-import pandas as pd
 import numpy as np
-import pandas_datareader.data as web
-import os
-from numpy.linalg import inv
 
-def ETF(tickers, group, source = 'google'):
 
-	path = os.path.join(os.path.dirname(__file__),
-	'..', 'database', '{}'.format(group), '{}.csv'.format(tickers))
+class OneSource:
+    """Returns every ticker from Schwab's OneSource ETF using get()"""
 
-# Datareader retreives historical prices from google finance.
-	p = web.DataReader(tickers, source)
-	logret = np.log(p.loc['Close']).diff()
-	grouped = logret.groupby(pd.Grouper(freq = 'BM'))
-	e = np.ones(logret.shape[1])
-	f = lambda x: inv(x.cov()) @ e
-	g = lambda x: pd.Series(x / (e @ x), index = logret.columns)
-	pweights = grouped.apply(f).apply(g)
-	georet = grouped.agg(lambda x: x.mean()-x.var()/2)
-	scores = pweights * georet
-	print(scores)
+    def __init__(self):
+
+        domestic = ['DEE', 'DEUS', 'DGRS', 'DGRW', 'DWAS', 'ESGL', 'EWSC',
+                    'FNDA', 'FNDB', 'FNDX', 'JHML', 'JHMM', 'JPME', 'JPSE',
+                    'JPUS', 'KNOW', 'KRMA', 'MDYG', 'MDYV', 'ONEO', 'ONEV',
+                    'ONEY', 'PDP', 'PKW', 'QQQE', 'QUS', 'RDIV', 'RFG', 'RFV',
+                    'RPG', 'RPV', 'RSP', 'RWJ', 'RWK', 'RWL', 'RZG', 'RZV',
+                    'SCHA', 'SCHB', 'SCHD', 'SCHG', 'SCHK', 'SCHM', 'SCHV',
+                    'SCHX', 'SDOG', 'SHE', 'SLYG', 'SLYV', 'SPHB', 'SPLV',
+                    'SPMD', 'SPYD', 'SPYX', 'SYE', 'SYG', 'SYV', 'WMCR', 'XLG'
+                    ]
+
+        internat = ['ACIM', 'CQQQ', 'CWI', 'DBAW', 'DBEF', 'DBEM', 'DBEZ',
+                    'DDWM', 'DEEF', 'DEMG', 'DGRE', 'DNL', 'DWX', 'DXGE',
+                    'DXJS', 'EDIV', 'EDOG', 'EEB', 'EELV', 'ESGF', 'EUSC',
+                    'EWEM', 'EWX', 'FEU', 'FNDC', 'FNDE', 'FNDF', 'FRN', 'GMF',
+                    'GXC', 'HDAW', 'HFXE', 'HFXI', 'HFXJ', 'HGI', 'IDLV',
+                    'IDOG', 'IHDG', 'JHDG', 'JHMD', 'JPEH', 'JPEM', 'JPEU',
+                    'JPGE', 'JPIH', 'JPIN', 'JPN', 'LOWC', 'PAF', 'PID', 'PIE',
+                    'PIN', 'PIZ', 'QCAN', 'QDEU', 'QEFA', 'QEMM', 'QGBR',
+                    'QJPN', 'SCHC', 'SCHE', 'SCHF', 'WDIV'
+                    ]
+
+        self.tickers = domestic + internat
+
+    def get(self):
+
+        return self.tickers
