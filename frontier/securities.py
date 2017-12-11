@@ -1,8 +1,8 @@
-import numpy as np
+from itertools import chain, combinations
 
 
 class OneSource:
-    """Returns every ticker from Schwab's OneSource ETF using get()"""
+    """Returns every ticker from Schwab's OneSource ETFbase using get()"""
 
     def __init__(self):
 
@@ -27,8 +27,14 @@ class OneSource:
                     'QJPN', 'SCHC', 'SCHE', 'SCHF', 'WDIV'
                     ]
 
-        self.tickers = domestic + internat
+        realasst = ['BNO', 'CPER', 'GCC', 'GLDW', 'GLTR', 'PALL', 'PPLT',
+                    'SGOL', 'SIVR', 'UGA', 'UNL', 'USCI', 'USL'
+                    ]
+
+        self.tickers = domestic + internat + realasst
+
+    def all_subsets(self, ss):
+      return chain(*map(lambda x: combinations(ss, x), range(2, 20)))
 
     def get(self):
-
         return self.tickers
