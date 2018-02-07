@@ -3,36 +3,50 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
+def gmvp(prtf):
+    """Finds the weights of a portfolio for minimum variance."""
+    scaler = MinMaxScaler()
+    pca = PCA(n_components=10)
+    samples = pd.DataFrame()
+    e = np.ones(prtf.shape[1])
+    for i in range(prtf.shape[0]-252):
+        sample = prtf.iloc[i:i+252]
+        scaled = scaler.fit_transform(sample)
+        v = pca.fit(scaled).get_precision()
+        pweights = pd.Series((v@e) / (e@v@e), index=prtf.columns)
+        georet = sample.agg('sum').apply(lambda x: np.exp(x) - 1)
+        pret = (pweights * georet).sum()
+        print(pret)
+        samples = samples.append(pweights, ignore_index=True)
+    return samples
 
 def scrub(data):
+    """
+    Reads a CSV file and organizes it neatly into a DataFrame.
+
+    Arguments:
+        data {.csv} -- the csv file to be read and scrubbed
+
+    Returns:
+        DataFrame -- the logarithmic returns of selected ticker symbols
+    """
     df = pd.read_csv(data, header=0, index_col=0, parse_dates=True)
     df.dropna(axis=1, inplace=True)
     logret = np.log(df).diff().iloc[1:]
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    pca = PCA(n_components=15)
-    samples = pd.DataFrame()
-    e = np.ones(df.shape[1])
-    for i in range(logret.shape[0]-252):
-        sample = logret.iloc[i:i+252]
-        scaled = scaler.fit_transform(sample)
-        v = pca.fit(scaled).get_precision()
-        gmvp = pd.Series((v@e) / (e@v@e), index=df.columns)
-        georet = sample.agg('sum').apply(lambda x: np.exp(x) - 1)
-        pret = (gmvp * georet).sum()
-        print(pret)
-        samples = samples.append(gmvp, ignore_index=True)
-    return samples
+    return logret
 
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     """
     Frame a time series as a supervised learning dataset.
+    (Adapted from Jason Brownlee's LSTM for multivariate time series)
+
     Arguments:
         data: Sequence of observations as a list or NumPy array.
         n_in: Number of lag observations as input (X).
         n_out: Number of observations as output (y).
+
     Returns:
         Pandas DataFrame of series framed for supervised learning.
-    (Adapted from Jason Brownlee's LSTM for multivariate time series)
     """
     n_vars = 1 if type(data) is list else data.shape[1]
     df = pd.DataFrame(data)

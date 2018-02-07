@@ -4,6 +4,7 @@ scipy
 scikit-learn
 matplotlib
 tensorflow
+keras
 pandas
 pandas-datareader
 tweepy
