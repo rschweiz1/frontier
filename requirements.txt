@@ -1,10 +1,8 @@
 jupyter
-numpy
-scipy
-scikit-learn
 matplotlib
-tensorflow
-keras
+numpy
 pandas
 pandas-datareader
-tweepy
+scipy
+scikit-learn
+tensorflow-gpu

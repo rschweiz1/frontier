@@ -1,7 +1,11 @@
 import os
+import datetime
 
+import numpy as np
 import pandas as pd
-import pandas_datareader.data as web
+import pandas_datareader as pdr
+import scipy.stats as ss
+import time
 
 
 class OneSource:
@@ -55,6 +59,7 @@ class OneSource:
                ]
 
         self.tickers = sect
+
     def get(self,
             start='1/1/2010',
             end=pd.to_datetime('today'),
@@ -62,5 +67,39 @@ class OneSource:
 
         path = os.path.join(os.path.dirname(__file__),
                             '..', 'database', 'machine data.csv')
-        df = web.DataReader(self.tickers, source, start, end).loc['Close']
+        df = pdr.DataReader(self.tickers, source, start, end).loc['Close']
         df.to_csv(path)
+
+
+class Option():
+    """
+    Generates option object based on input data parameters.
+
+    inputs: strike, date, bid, ask, delta, gamma, theta, vega
+
+    outputs: none
+    """
+    def __init__(self, otype, underlying, strike, expiry, bid, ask, delta, gamma, theta, vega, IV):
+        self.type = otype # Call or put
+        self.underlying = underlying
+        self.strike = strike
+        self.expiry = date
+        self.bid = bid
+        self.ask = ask
+        self.delta = delta
+        self.gamma = gamma
+        self.theta = theta
+        self.vega = vega
+        self.IV = IV
+
+        now = datetime.datetime.now()
+        self.TTM = self.expiry - now
+        r = 1.02 # US federal funds rate
+        self.d1 = (np.log(self.underlying/self.strike) + (r + self.IV**2 / 2) * T)/(self.IV * np.sqrt(TTM))
+        self.d2 = (np.log(self.underlying/self.strike) + (r - self.IV**2 / 2) * T)/(self.IV * np.sqrt(TTM))
+
+        if self.otype=="C":
+            self.dist = self.underlying * ss.norm.cdf(self.d1) - self.strike * np.exp(-r * self.TTM) * ss.norm.cdf(self.d2)
+        else:
+            self.dist = self.strike * np.exp(-r * self.TTM) * ss.norm.cdf(-self.d2) - self.underlying * ss.norm.cdf(-self.d1)
+        return
