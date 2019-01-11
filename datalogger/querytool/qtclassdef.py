@@ -1,4 +1,3 @@
-import argparse
 
 # Acts as a superclass to different order types. It contains the interface data all orders share. 
 class Order(object):
@@ -56,7 +55,6 @@ class Order(object):
 				self.execPrice = -1.0
 				self.time = ""
 			
-		
 class OptionOrder(Order):
 	def __init__(self, order_data):
 		self.assetType = ""
@@ -112,7 +110,8 @@ class FixedIncomeOrder(Order):
 		self.maturityDate = ""
 		self.variableRate = 0
 		self.factor = 0
-		
+
+# Class to encapsulate user preferences for a TD Ameritrade account.
 class UserPreferences(object):
 	def __init__(self):
 		self.expressTrading = False
@@ -129,7 +128,7 @@ class UserPreferences(object):
 		self.equityTaxLotMethod = ""
 		self.defaultAdvancedToolLaunch = ""
 		self.authTokenTimeout = ""
-		
+
 class Watchlist(object):
 	def __init__(self):
 		self.name = ""
@@ -141,121 +140,3 @@ class Watchlist(object):
 		self.watchlistSymbol = ""
 		self.watchlistAssetType = ""
 		self.watchlistSequenceID = 0
-		
-
-# A direct interface to the TD Ameritrade API. Each method takes arguments specific
-# to the query in the API.
-class QueryTool(object):
-	def __init__(self):
-		self.successfulQueries 	= 0
-		self.failedQueries		= 0
-	
-	def CancelOrder(self, accountID, orderID):
-		return
-	
-	def GetOrder(self, accountID, orderID):
-		return
-		
-	def GetOrderByPath(self,  accountID, maxResults, fromTime, toTime, status):
-		return
-		
-	def GetOrderByQuery(self, accountID, maxResults, fromTime, toTime, status):
-		return
-		
-	def PlaceOrder(self, accountID, order):
-		return
-		
-	def ReplaceOrder(self, accountID, orderID, order):
-		return
-	
-	def CreateSavedOrder(self, accountID, order):
-		return
-		
-	def DeleteSavedOrder(self, accountID, savedOrderID):
-		return
-		
-	def GetSavedOrder(self, accountID, savedOrderID):
-		return
-		
-	def GetSavedOrderByPath(self, accountID):
-		return
-		
-	def ReplacedSavedOrder(self, accountID, savedOrderID, order):
-		return
-		
-	def GetAccount(self, accountID, fields):
-		return
-		
-	def GetAccounts(self, fields):
-		return
-		
-	def PostAccessToken(self, grant_type, refresh_token, access_type, code, client_id, redirect_uri):
-		return
-		
-	def SearchInstruments(self, apikey, symbol, projection):
-		return
-		
-	def GetInstrument(self, cusip, apikey):
-		return
-		
-	def GetMarketHours(self, apikey, markets, date):
-		return
-		
-	def GetMovers(self, index, apikey, direction, change):
-		return
-		
-	def GetOptionChain(self, apikey, symbol, contractType, strikeCount, includeQuotes, strategy, interval, strike, range, fromDate, toDate, volatility, underlyingPrice, interestRate, daysToExp, expMonth, optionType):
-		return
-		
-	def GetPriceHistory(self, symbol, apikey, periodType, period, frequencyType, frequency, endDate, startDate, extendedHours):
-		return
-		
-	def GetQuotes(self, symbols, apikey):
-		return
-		
-	def GetTransaction(self, accountID, transactionID):
-		return
-	
-	def GetTransactions(self, accountID, type, symbol, startDate, endDate):
-		return
-		
-	def GetPreferences(self, accountID):
-		return
-		
-	def GetSubscriptionKeys(self, accountIDs):
-		return
-		
-	def GetUserPrincipals(self, fields):
-		return
-		
-	def SetPreferences(self, accountID, preferences):
-		return
-		
-	def CreateWatchlist(self, accountID, watchlist):
-		return
-		
-	def DeleteWatchlist(self, accountID, watchlistID):
-		return
-	
-	def GetWatchlist(self, accountID, watchlistID):
-		return
-		
-	def GetWatchlists(self, accountID):
-		return
-		
-	def GetAllWatchlists(self):
-		return
-		
-	def ReplaceWatchlist(self, accountID, watchlistID, watchlist):
-		return
-		
-	def UpdateWatchlist(self, accountID, watchlistID, watchlist):
-		return
-
-
-def Run():
-	print "query.py"
-	return
-	
-if __name__ == "__main__":
-	Run()
