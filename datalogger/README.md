@@ -1,4 +1,7 @@
 ## Query Tool ##
+
+### Version: 0.0.1 (Alpha) ###
+***
 The Query Tool is a Python abstraction of the TD Ameritrade Developer's API. It
 supports various commands to interface with it, including getting quotes, posting
 orders, and modifying account preferences.
@@ -14,18 +17,33 @@ NOTE: Brackets [ ] denote required arguments.
 
 + **Command**: ```help```  
 **Subcommands**: None  
+**Arguments**:  None  
 **Description**: Displays querytool basic information.  
-**Example**: ```>> help```
+**Examples**:  
+```>> help```
 
 + **Command**: ```quit```  
 **Subcommands**: None  
+**Arguments**:  None  
 **Description**: Exits the querytool terminal back to the command line.  
-**Example**: ```>> quit```  
+**Examples**:  
+```>> quit```  
 
 + **Command**: ```history```  
 **Subcommands**: None  
+**Arguments**:  ```[symbol] <period-type> <period> <frequency-type> <frequency> <<endDate>> <<startDate>> <extendedHours>```  
 **Description**: Displays candle data history for a given ticker and time frame.  
-**Example**: ```>> history AAPL```  
+**Examples**:  
+```>> history AAPL```  
+```>> history IEC day 2 minute 1```  
+
++ **Command**: ```markethours```  
+**Subcommands**: None  
+**Arguments**:  ```[market-type]```  
+**Description**: Displays market open/closed status.  
+**Examples**:  
+```>> markethours FOREX```  
+```>> markethours [EQUITY/OPTION/FUTURE/BOND/FOREX]```
 
 + **Command**: ```query```  
 **Subcommands**: ```quote, movers```  

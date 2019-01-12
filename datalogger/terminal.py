@@ -78,15 +78,9 @@ def QueryCommand(tokens):
 #	<period>		 - Number of periods to show. (Default: Varies)
 #	<frequency-type> - Frequency in which new candle is formed:	(day, month, year, ytd)
 #	<frequency>		 - Number of frequency-type to be included in each candle. (Default: 1)
+#	<endDate>		 - Lookup end date (milliseconds since epoch).
+#	<startDate>		 - Lookup start date (milliseconds since epoch).
 #	<extendedHours>  - Returned price history includes extended trading hours (Default: False)
-
-# Note: If using <period, leave these fields blank.
-#	TODO<endDate>		 - Lookup end date (milliseconds since epoch).
-#	TODO<startDate>		 - Lookup start date (milliseconds since epoch).
-#
-# Examples: 
-#	(1) history AAPL day 2 minute 1
-#	
 def PriceHistoryCommand(tokens):
 	qt = query.QueryTool()
 	
@@ -107,6 +101,16 @@ def PriceHistoryCommand(tokens):
 			qt.GetPriceHistory(sym, periodType=tokens[2], period=str(tokens[3]), frequencyType=tokens[4])
 		elif argc == 6:
 			qt.GetPriceHistory(sym, periodType=tokens[2], period=str(tokens[3]), frequencyType=tokens[4], frequency=str(tokens[5]))
+		elif argc == 7:
+			qt.GetPriceHistory(sym, periodType=tokens[2], period=str(tokens[3]), frequencyType=tokens[4], frequency=str(tokens[5]), endDate=str(tokens[6]))
+		elif argc == 8:
+			qt.GetPriceHistory(sym, periodType=tokens[2], period=str(tokens[3]), frequencyType=tokens[4], frequency=str(tokens[5]), endDate=str(tokens[6]), startDate=str(tokens[7]))
+		elif argc == 9:
+			ext = False
+			if tokens[8] == 'true' or tokens[8] == 'True' or tokens[8] == 'TRUE':
+				ext = True
+		
+			qt.GetPriceHistory(sym, periodType=tokens[2], period=str(tokens[3]), frequencyType=tokens[4], frequency=str(tokens[5]), endDate=str(tokens[6]), startDate=str(tokens[7]), extendedHours=ext)
 		else:
 			print "Too many arguments."
 

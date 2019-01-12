@@ -2,6 +2,7 @@
 # constructs and sends JSON data.
 from copy import deepcopy
 import requests
+import datetime
 
 import quotes
 import candles
@@ -101,8 +102,38 @@ class QueryTool(object):
 		return
 	
 	# Valid date strings are (1) yyyy-MM-dd (2) yyyy-MM-dd'T'HH:mm:ssz
-	def GetMarketHours(self, market, date):
-		print "Method Unimplemented"
+	def GetMarketHours(self, market, date='0000-00-00'):
+		path = API_CORE_PATH + API_MARKETHOURS_SUFFIX
+		suffix = "/hours"
+		
+		params = { 'apikey' : API_KEY }
+		
+		if date != '0000-00-00':
+			params['date'] = date
+		
+		# Construct full path and sent JSON GET request.
+		fullpath = path + market.upper() + suffix
+		json = SendJSON(fullpath, params)
+		
+		if not json:
+			print "Invalid JSON parameter."
+			self.failedQueries		+= 1
+		else:
+			self.successfulQueries 	+= 1
+			idx = market.lower()
+			
+			stat = 'Open'
+			if json[idx][idx]['isOpen'] == False:
+				stat = 'Closed'
+			
+			dt = datetime.datetime.now()
+			print "---------------------"
+			print json[idx][idx]['marketType'] + " Market Status:"
+			print "\tDate: " + json[idx][idx]['date']
+			print "\tTime: " + str(dt.hour) + ":" + str(dt.minute) + ":" + str(dt.second)
+			print "\tStatus: " + stat
+			print "---------------------"
+		
 		return
 	
 	# Get top 10 (up or down) movers by value or percent for a particular market.
@@ -119,27 +150,34 @@ class QueryTool(object):
 					'direction': direction,
 					'change' : change }
 		
+		
 		# Construct full path and sent JSON GET request.
 		fullpath = path + market + suffix
-		temp = SendJSON(fullpath, params)
+		json = SendJSON(fullpath, params)
 		
-		# Display character for change type.
-		if change == 'value':
-			type = 'U'
+		if not json:
+			print "Invalid JSON parameter."
+			self.failedQueries		+= 1
 		else:
-			type = '%'
+			self.successfulQueries 	+= 1
 		
-		# Display all 10 movers.
-		ctx = len(temp)
-		for i in range(0, ctx):
-			print "-- [" + direction.upper() + "] --"
-			print "Symbol: " + temp[i]['symbol']
-			print "Description: " + temp[i]['description']
-			print "Change: " + str(temp[i]['change']) + type
-			print "Last: $" + str(temp[i]['last']) + " Volume: " + str(temp[i]['totalVolume'])
-			print "----------"
+			# Display character for change type.
+			if change == 'value':
+				type = 'U'
+			else:
+				type = '%'
+			
+			# Display all 10 movers.
+			ctx = len(json)
+			for i in range(0, ctx):
+				print "-- [" + direction.upper() + "] --"
+				print "Symbol: " + json[i]['symbol']
+				print "Description: " + json[i]['description']
+				print "Change: " + str(json[i]['change']) + type
+				print "Last: $" + str(json[i]['last']) + " Volume: " + str(json[i]['totalVolume'])
+				print "----------"
 		
-		return deepcopy(temp)
+		return deepcopy(json)
 		
 	def GetOptionChain(self, symbol, contractType, strikeCount, includeQuotes, strategy, interval, strike, range, fromDate, toDate, volatility, underlyingPrice, interestRate, daysToExp, expMonth, optionType):
 		print "Method Unimplemented"
@@ -159,37 +197,49 @@ class QueryTool(object):
 		# Setup JSON GET parameters.
 		params = {  'apikey' : API_KEY,
 					'periodType' : pt,
-					'period' : p,
 					'frequencyType' : ft,
 					'frequency' : f,
 					'needExtendedHoursData' : 'false' }
 		
-		# Add additional, option parameters.
+		# If start and end times are provided, add them to the parameters. The
+		# API specifies that period should then not be provided.
 		if endDate != 0 and startDate < endDate:
 			params['endDate'] = endDate
 			params['startDate'] = startDate
+		else:
+			params['period'] = p
+		
+		# Include extended hours data?
 		if extendedHours == True:
 			params['needExtendedHoursData'] = 'true'
-
+		
+		argc  = 0
+		clist = []
+	
 		# Setup full API path and send JSON GET request.
 		fullpath = path + symbol + suffix
-		temp = SendJSON(fullpath, params)
+		json = SendJSON(fullpath, params)
 		
 		# If response was empty, something went wrong.
-		if not temp:
+		if not json:
 			print "Invalid JSON parameter."
+			self.failedQueries		+= 1
+		elif 'error' in json.keys(): 
+			print "Error: " + json['error']
+			self.failedQueries		+= 1
 		else:
-			numcandles = len(temp["candles"])
-			clist = []
+			self.successfulQueries 	+= 1
+			
+			argc = len(json["candles"])
 			
 			# Create a candle object for each piece of
 			# candle data recieved.
-			for i in range(0, numcandles):
-				c = candles.Candle(temp["candles"][i])
+			for i in range(0, argc):
+				c = candles.Candle(json["candles"][i])
 				clist.append(c)
 				c.PrintAttributes()
 		
-		print "Retrieved " + str(numcandles) + " candles."
+		print "Retrieved " + str(argc) + " candles."
 		
 		return deepcopy(clist)
 		
@@ -207,26 +257,28 @@ class QueryTool(object):
 			fullpath = path + sym + suffix
 			
 			# Send JSON GET request.
-			temp = SendJSON(fullpath, params)
+			json = SendJSON(fullpath, params)
 			
 			# If response was empty, something went wrong.
-			if not temp:
+			if not json:
 				print "Invalid symbol name."
+				self.failedQueries		+= 1
 			else:
-				type = quotes.GetQuoteType(sym, temp)
+				self.successfulQueries	+= 1
+				type = quotes.GetQuoteType(sym, json)
 				
 				# Instantiate a Quote subclass specific
 				# to the quote type.
 				if type == 'EQUITY':
-					obj = quotes.EquityQuote(temp)
+					obj = quotes.EquityQuote(json)
 					obj.PrintAttributes()
 					quote_array.append(obj)
 				elif type == 'MUTUAL_FUND':
-					obj = quotes.MutualFundQuote(temp)
+					obj = quotes.MutualFundQuote(json)
 					obj.PrintAttributes()
 					quote_array.append(obj)
 				else:
-					print temp
+					print json
 		
 		return deepcopy(quote_array)
 		
