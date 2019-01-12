@@ -1,7 +1,16 @@
 import argparse
-import qtclassdef
 import requests
+import qtclassdef
+import quotes
 
+# Possible return value error codes.
+ERR_NULL_VALUE			= 400
+ERR_INVALID_AUTH		= 401
+ERR_FORBIDDEN			= 403
+ERR_NOT_FOUND			= 404
+
+# Convenient path vairables.
+API_KEY					= "GX4040"
 API_CORE_PATH 			= "https://api.tdameritrade.com/v1/"
 API_ACCOUNTS_SUFFIX 	= "accounts/"
 API_AUTH_SUFFIX 		= "oauth2/token/"
@@ -104,8 +113,30 @@ class QueryTool(object):
 		print "Method Unimplemented"
 		return
 		
-	def GetQuotes(self, symbols, apikey):
-		print "Method Unimplemented"
+	def GetQuotes(self, symbols):
+		path   = API_CORE_PATH + API_QUOTE_SUFFIX
+		suffix = "/quotes"
+		params = { 'apikey' : API_KEY }
+		
+		quotes = []
+		
+		for sym in symbols:
+			
+			# Construct full API path.
+			fullpath = path + sym + suffix
+			
+			# Send JSON GET request.
+			temp = SendJSON(fullpath, params)
+			
+			# Get the quote type and create
+			# the applicable object.
+			type = quotes.GetQuoteType(sym, temp)
+			
+			if type == 'EQUITY':
+				obj = quotes.EquityQuote(temp)
+				
+				print obj.description
+		
 		return
 		
 	def GetTransaction(self, accountID, transactionID):
@@ -164,9 +195,4 @@ def SendJSON(address, parameters):
 	r = requests.get(url = address, params = parameters)
 	data = r.json()
 	
-	print data
-	
-if __name__ == "__main__":
-	p = { 'apikey' : 'GX4040' }
-	addr = API_CORE_PATH + API_QUOTE_SUFFIX + "IEC/quotes"
-	SendJSON(addr, p)
+	return data

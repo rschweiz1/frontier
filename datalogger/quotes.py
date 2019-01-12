@@ -1,264 +1,263 @@
 import argparse
 
-class MutualFund:
-	def __init__(self):
-		self.symbol = ""
-		self.description = ""
-		self.closePrice = -1.0
-		self.netChange = -1.0
-		self.totalVolume = -1.0
-		self.tradeTime = -1.0
-		self.exchange = ""
-		self.exchangeName = ""
-		self.digits = -1.0
-		self.week52High = -1.0
-		self.week52Low = -1.0
-		self.nAV = -1.0
-		self.peRatio = -1.0
-		self.divAmount = -1.0
-		self.divYield = -1.0
-		self.divDate = ""
-		self.securityStatus = ""
-
-class Future:
-	def __init__(self):
-		self.symbol = ""
-		self.bidPrice = -1.0
-		self.askPrice = -1.0
-		self.lastPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.exchange = ""
-		self.description = ""
-		self.openPrice = -1.0
-		self.change = -1.0
-		self.pctChange = -1.0
-		self.exchangeName = ""
-		self.digits = -1.0
-		self.securityStatus = ""
-		self.tick = -1.0
-		self.tickAmount = -1.0
-		self.product = ""
-		self.priceFormat = ""
-		self.tradingHours = ""
-		self.isTradable = False
-		self.multiplier = -1.0
-		self.isActive = False
-		self.settlementPrice = -1.0
-		self.futureActiveSymbol = ""
-		self.expirationDate = ""
-		
-class FutureOption:
-	def __init__(self):
-		self.symbol = ""
-		self.bidPrice = -1.0
-		self.askPrice = -1.0
-		self.lastPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.description = -1.0
-		self.openPrice = -1.0
-		self.netChange = -1.0
-		self.openInterest = -1.0
-		self.exchangeName = ""
-		self.securityStatus = ""
-		self.volatility = -1.0
-		self.moneyIntValue = -1.0	# Money Intrinsic Value
-		self.multiplier = -1.0
-		self.digits = -1.0
-		self.strikePrice = -1.0
-		self.contractType = ""
-		self.underlying = ""
-		self.timeValue = -1.0
-		self.delta = -1.0
-		self.gamma = -1.0
-		self.theta = -1.0
-		self.vega = -1.0
-		self.rho = -1.0
-		self.mark = -1.0
-		self.tick = -1.0
-		self.tickAmount - 1.0
-		self.isTradable = False
-		self.tradingHours = ""
-		self.pctChange = -1.0
-		self.isActive = False
-		self.expirationDate = -1.0
-		self.expirationType = ""
-		self.exerciseType = ""
-		self.inTheMoney = False
-		
-class Index:
-	def __init__(self):
-		self.symbol = ""
-		self.description = ""
-		self.lastPrice = -1.0
-		self.openPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.netChange = -1.0
-		self.totalVolume = -1.0
-		self.tradeTime = -1.0
-		self.exchange = ""
-		self.exchangeName = ""
-		self.digits = -1.0
-		self.week52High = -1.0
-		self.week52Low = -1.0
-		self.securityStatus = ""
-		
-class Option:
-	def __init__(self):
-		self.symbol = ""
-		self.description = ""
-		self.bidPrice = -1.0
-		self.bidSize = -1.0
-		self.askPrice = -1.0
-		self.askSize = -1.0
-		self.lastPrice = -1.0
-		self.lastSize = -1.0
-		self.openPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.netChange = -1.0
-		self.totalVolume = -1.0
-		self.quoteTime = 0
-		self.tradeTime = 0
-		self.mark = -1.0
-		self.openInterest = -1.0
-		self.volatility = -1.0
-		self.moneyIntValue = -1.0
-		self.multiplier = -1.0
-		self.strikePrice = -1.0
-		self.contractType = ""
-		self.underlying = ""
-		self.timeValue = -1.0
-		self.deliverables = ""
-		self.delta = -1.0
-		self.gamma = -1.0
-		self.theta = -1.0
-		self.vega = -1.0
-		self.rho = -1.0
-		self.securityStatus = ""
-		self.theoreticalValue = -1.0
-		self.underlyingPrice = -1.0
-		self.uvExpirationType = ""
-		self.exchange = ""
-		self.exchangeName = ""
-		self.settlementName = ""
-		
-class Forex:
-	def __init__(self):
-		self.symbol = ""
-		self.bidPrice = -1.0
-		self.askPrice = -1.0
-		self.lastPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.exchange = ""
-		self.description = ""
-		self.openPrice = -1.0
-		self.change = -1.0
-		self.pctChange = -1.0
-		self.exchangeName = ""
-		self.digits = -1.0
-		self.securityStatus = ""
-		self.tick = -1.0
-		self.tickAmount = -1.0
-		self.product = ""
-		self.tradingHours = ""
-		self.isTradable = False
-		self.marketMaker = ""
-		self.week52High = -1.0
-		self.week52Low = -1.0
-		self.mark = -1.0
-		
-class ETF:
-	def __init__(self):
-		self.symbol = ""
-		self.description = ""
-		self.bidPrice = -1.0
-		self.bidSize = -1.0
-		self.bidID = ""
-		self.askPrice = -1.0
-		self.askSize = -1.0
-		self.askID = ""
-		self.lastPrice = -1.0
-		self.lastSize = -1.0
-		self.lastID = ""
-		self.openPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.netChange = -1.0
-		self.totalVolume = -1.0
-		self.quoteTime = -1.0
-		self.tradeTime = -1.0
-		self.mark = -1.0
-		self.exchange = ""
-		self.exchangeName = ""
-		self.marginable = False
-		self.shortable = False
-		self.volatility = -1.0
-		self.digits = -1.0
-		self.week52High = -1.0
-		self.week52Low = -1.0
-		self.peRatio = -1.0
-		self.divAmount = -1.0
-		self.divYield = -1.0
-		self.divDate = -1.0
-		self.securityStatus = ""
-		self.regMarketLastPrice = -1.0
-		self.regMarketLastSize = -1.0
-		self.regMarketNetChange = -1.0
-		self.regMarketTradeTime = 0
-		
-class Equity:
-	def __init__(self):
-		self.symbol = ""
-		self.description = ""
-		self.bidPrice = -1.0
-		self.bidSize = -1.0
-		self.bidID = ""
-		self.askPrice = -1.0
-		self.askSize = -1.0
-		self.askID = ""
-		self.lastPrice = -1.0
-		self.lastSize = -1.0
-		self.lastID = ""
-		self.openPrice = -1.0
-		self.highPrice = -1.0
-		self.lowPrice = -1.0
-		self.closePrice = -1.0
-		self.netChange = -1.0
-		self.totalVolume = -1.0
-		self.quoteTime = -1.0
-		self.tradeTime = -1.0
-		self.mark = -1.0
-		self.exchange = ""
-		self.exchangeName = ""
-		self.marginable = False
-		self.shortable = False
-		self.volatility = -1.0
-		self.digits = -1.0
-		self.week52High = -1.0
-		self.week52Low = -1.0
-		self.peRatio = -1.0
-		self.divAmount = -1.0
-		self.divYield = -1.0
-		self.divDate = ""
-		self.securityStatus = ""
-		self.regMarketLastPrice = -1.0
-		self.regMarketLastSize = -1.0
-		self.regMarketNetChange = -1.0
-		self.regMarketTradeTime = 0
-			
-def Run():
-	print "quotes.py"
-	return
+# This is a superclass for the subclasses following it; it acts as a master quote object.
+# The objects are initialized by passing JSON GET data retrieved from the API.
+class Quote(object):
+	def __init__(self, json):
+		self.type			= ""
+		self.symbol 		= json.keys()[0]
+		self.description 	= json[self.symbol]['description']
+		self.exchange 		= json[self.symbol]['exchange']
+		self.exchangeName 	= json[self.symbol]['exchangeName']
+		self.securityStatus = json[self.symbol]['securityStatus']
 	
-if __name__ == "__main__":
-	Run()
+	def DumpAttributes(self):
+		for attr in self.__dict__.keys():
+			print attr + " = " + str(self.__dict__[attr])
+
+class MutualFundQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type			= "MutualFund"
+		self.closePrice 	= json[self.symbol]['closePrice']
+		self.netChange 		= json[self.symbol]['netChange']
+		self.totalVolume 	= json[self.symbol]['totalVolume']
+		self.tradeTime 		= json[self.symbol]['tradeTimeInLong']
+		self.digits 		= json[self.symbol]['digits']
+		self.week52High 	= json[self.symbol]['52WkHigh']
+		self.week52Low 		= json[self.symbol]['52WkLow']
+		self.nAV 			= json[self.symbol]['nAV']
+		self.peRatio 		= json[self.symbol]['peRatio']
+		self.divAmount 		= json[self.symbol]['divAmount']
+		self.divYield 		= json[self.symbol]['divYield']
+		self.divDate 		= json[self.symbol]['divDate']
+
+class FutureQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type				= "Future"
+		self.bidPrice 			= json[self.symbol]['bidPriceInDouble']
+		self.askPrice 			= json[self.symbol]['askPriceInDouble']
+		self.lastPrice 			= json[self.symbol]['lastPriceInDouble']
+		self.bidID				= json[self.symbol]['bidId']
+		self.askID				= json[self.symbol]['askId']
+		self.highPrice 			= json[self.symbol]['highPriceInDouble']
+		self.lowPrice 			= json[self.symbol]['lowPriceInDouble']
+		self.closePrice 		= json[self.symbol]['closePriceInDouble']
+		self.openPrice 			= json[self.symbol]['openPriceInDouble']
+		self.change 			= json[self.symbol]['changeInDouble']
+		self.pctChange 			= json[self.symbol]['futurePercentChange']
+		self.openInterest		= json[self.symbol]['openInterest']
+		self.mark				= json[self.symbol]['mark']
+		self.tick 				= json[self.symbol]['tick']
+		self.tickAmount 		= json[self.symbol]['tickAmount']
+		self.product 			= json[self.symbol]['product']
+		self.priceFormat 		= json[self.symbol]['futurePriceFormat']
+		self.tradingHours 		= json[self.symbol]['futureTradingHours']
+		self.isTradable 		= json[self.symbol]['futureIsTradable']
+		self.multiplier 		= json[self.symbol]['futureMultiplier']
+		self.isActive 			= json[self.symbol]['futureIsActive']
+		self.settlementPrice 	= json[self.symbol]['futureSettlementPrice']
+		self.futureActiveSymbol = json[self.symbol]['futureActiveSymbol']
+		self.expirationDate 	= json[self.symbol]['futureExpirationDate']
+		
+class FutureOptionQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type			= "FutureOption"
+		self.bidPrice 		= json[self.symbol]['bidPriceInDouble']
+		self.askPrice 		= json[self.symbol]['askPriceInDouble']
+		self.lastPrice 		= json[self.symbol]['lastPriceInDouble']
+		self.highPrice 		= json[self.symbol]['highPriceInDouble']
+		self.lowPrice 		= json[self.symbol]['lowPriceInDouble']
+		self.closePrice 	= json[self.symbol]['closePriceInDouble']
+		self.openPrice 		= json[self.symbol]['openPriceInDouble']
+		self.netChange 		= json[self.symbol]['netChangeInDouble']
+		self.openInterest 	= json[self.symbol]['openInterest']
+		self.volatility 	= json[self.symbol]['volatility']
+		self.moneyIntValue 	= json[self.symbol]['moneyIntrinsicValueInDouble']
+		self.multiplier 	= json[self.symbol]['multiplierInDouble']
+		self.digits 		= json[self.symbol]['digits']
+		self.strikePrice 	= json[self.symbol]['strikePriceInDouble']
+		self.contractType 	= json[self.symbol]['contractType']
+		self.underlying 	= json[self.symbol]['underlying']
+		self.timeValue 		= json[self.symbol]['timeValueInDouble']
+		self.delta 			= json[self.symbol]['deltaInDouble']
+		self.gamma 			= json[self.symbol]['gammaInDouble']
+		self.theta 			= json[self.symbol]['thetaInDouble']
+		self.vega 			= json[self.symbol]['vegaInDouble']
+		self.rho 			= json[self.symbol]['rhoInDouble']
+		self.mark 			= json[self.symbol]['mark']
+		self.tick 			= json[self.symbol]['tick']
+		self.tickAmount 	= json[self.symbol]['tickAmount']
+		self.isTradable 	= json[self.symbol]['futureIsTradable']
+		self.tradingHours 	= json[self.symbol]['futureTradingHours']
+		self.pctChange 		= json[self.symbol]['futurePercentChange']
+		self.isActive 		= json[self.symbol]['futureIsActive']
+		self.expirationDate = json[self.symbol]['futureExpirationDate']
+		self.expirationType = json[self.symbol]['expirationType']
+		self.exerciseType 	= json[self.symbol]['exerciseType']
+		self.inTheMoney 	= json[self.symbol]['inTheMoney']
+		
+class IndexQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type			= "IndexQuote"
+		self.lastPrice 		= json[self.symbol]['lastPrice']
+		self.openPrice 		= json[self.symbol]['openPrice']
+		self.highPrice 		= json[self.symbol]['highPrice']
+		self.lowPrice 		= json[self.symbol]['lowPrice']
+		self.closePrice 	= json[self.symbol]['closePrice']
+		self.netChange 		= json[self.symbol]['netChange']
+		self.totalVolume 	= json[self.symbol]['totalVolume']
+		self.tradeTime 		= json[self.symbol]['tradeTimeInLong']
+		self.digits 		= json[self.symbol]['digits']
+		self.week52High 	= json[self.symbol]['52WkHigh']
+		self.week52Low 		= json[self.symbol]['52WkLow']
+		
+class OptionQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type				= "Option"
+		self.bidPrice 			= json[self.symbol]['bidPrice']
+		self.bidSize 			= json[self.symbol]['bidSize']
+		self.askPrice 			= json[self.symbol]['askPrice']
+		self.askSize 			= json[self.symbol]['askSize']
+		self.lastPrice 			= json[self.symbol]['lastPrice']
+		self.lastSize 			= json[self.symbol]['lastSize']
+		self.openPrice 			= json[self.symbol]['openPrice']
+		self.highPrice 			= json[self.symbol]['highPrice']
+		self.lowPrice 			= json[self.symbol]['lowPrice']
+		self.closePrice 		= json[self.symbol]['closePrice']
+		self.netChange 			= json[self.symbol]['netChange']
+		self.totalVolume 		= json[self.symbol]['totalVolume']
+		self.quoteTime 			= json[self.symbol]['quoteTimeInLong']
+		self.tradeTime 			= json[self.symbol]['tradeTimeInLong']
+		self.mark 				= json[self.symbol]['mark']
+		self.openInterest 		= json[self.symbol]['openInterest']
+		self.volatility 		= json[self.symbol]['volatility']
+		self.moneyIntValue 		= json[self.symbol]['moneyIntrinsicValue']
+		self.multiplier 		= json[self.symbol]['multiplier']
+		self.strikePrice 		= json[self.symbol]['strikePrice']
+		self.contractType 		= json[self.symbol]['contractType']
+		self.underlying 		= json[self.symbol]['underlying']
+		self.timeValue 			= json[self.symbol]['timeValue']
+		self.deliverables 		= json[self.symbol]['deliverables']
+		self.delta 				= json[self.symbol]['delta']
+		self.gamma 				= json[self.symbol]['gamma']
+		self.theta 				= json[self.symbol]['theta']
+		self.vega 				= json[self.symbol]['vega']
+		self.rho 				= json[self.symbol]['rho']
+		self.theoreticalValue 	= json[self.symbol]['theoreticalOptionValue']
+		self.underlyingPrice 	= json[self.symbol]['underlyingPrice']
+		self.uvExpirationType 	= json[self.symbol]['uvExpirationType']
+		self.settlementType 	= json[self.symbol]['settlementType']
+		
+class ForexQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type			= "Forex"
+		self.bidPrice 		= json[self.symbol]['bidPriceInDouble']
+		self.askPrice 		= json[self.symbol]['askPriceInDouble']
+		self.lastPrice 		= json[self.symbol]['lastPriceInDouble']
+		self.highPrice 		= json[self.symbol]['highPriceInDouble']
+		self.lowPrice 		= json[self.symbol]['lowPriceInDouble']
+		self.closePrice 	= json[self.symbol]['closePriceInDouble']
+		self.openPrice 		= json[self.symbol]['openPriceInDouble']
+		self.change 		= json[self.symbol]['changeInDouble']
+		self.pctChange 		= json[self.symbol]['percentChange']
+		self.digits 		= json[self.symbol]['digits']
+		self.tick 			= json[self.symbol]['tick']
+		self.tickAmount 	= json[self.symbol]['tickAmount']
+		self.product 		= json[self.symbol]['product']
+		self.tradingHours 	= json[self.symbol]['tradingHours']
+		self.isTradable 	= json[self.symbol]['isTradable']
+		self.marketMaker 	= json[self.symbol]['marketMaker']
+		self.week52High 	= json[self.symbol]['52WkHighInDouble']
+		self.week52Low 		= json[self.symbol]['52WkLowInDouble']
+		self.mark 			= json[self.symbol]['mark']
+		
+class ETFQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+
+		self.type				= "ETF"
+		self.bidPrice 			= json[self.symbol]['bidPrice']
+		self.bidSize 			= json[self.symbol]['bidSize']
+		self.bidID 				= json[self.symbol]['bidId']
+		self.askPrice 			= json[self.symbol]['askPrice']
+		self.askSize 			= json[self.symbol]['askSize']
+		self.askID 				= json[self.symbol]['askId']
+		self.lastPrice 			= json[self.symbol]['lastPrice']
+		self.lastSize 			= json[self.symbol]['lastSize']
+		self.lastID 			= json[self.symbol]['lastId']
+		self.openPrice 			= json[self.symbol]['openPrice']
+		self.highPrice 			= json[self.symbol]['highPrice']
+		self.lowPrice 			= json[self.symbol]['lowPrice']
+		self.closePrice 		= json[self.symbol]['closePrice']
+		self.netChange 			= json[self.symbol]['netChange']
+		self.totalVolume 		= json[self.symbol]['totalVolume']
+		self.quoteTime 			= json[self.symbol]['quoteTimeInLong']
+		self.tradeTime 			= json[self.symbol]['tradeTimeInLong']
+		self.mark 				= json[self.symbol]['mark']
+		self.marginable			= json[self.symbol]['marginable']
+		self.shortable 			= json[self.symbol]['shortable']
+		self.volatility 		= json[self.symbol]['volatility']
+		self.digits 			= json[self.symbol]['digits']
+		self.week52High 		= json[self.symbol]['52WkHigh']
+		self.week52Low 			= json[self.symbol]['52WkLow']
+		self.peRatio 			= json[self.symbol]['peRatio']
+		self.divAmount 			= json[self.symbol]['divAmount']
+		self.divYield 			= json[self.symbol]['divYield']
+		self.divDate 			= json[self.symbol]['divDate']
+		self.regMarketLastPrice = json[self.symbol]['regularMarketLastPrice']
+		self.regMarketLastSize 	= json[self.symbol]['regularMarketLastSize']
+		self.regMarketNetChange = json[self.symbol]['regularMarketNetChange']
+		self.regMarketTradeTime = json[self.symbol]['regularMarketTradeTimeInLong']
+		
+class EquityQuote(Quote):
+	def __init__(self, json):
+		Quote.__init__(self, json)
+		
+		self.type				= "Equity"
+		self.bidPrice 			= json[self.symbol]['bidPrice']
+		self.bidSize 			= json[self.symbol]['bidSize']
+		self.bidID 				= json[self.symbol]['bidId']
+		self.askPrice 			= json[self.symbol]['askPrice']
+		self.askSize 			= json[self.symbol]['askSize']
+		self.askID 				= json[self.symbol]['askId']
+		self.lastPrice 			= json[self.symbol]['lastPrice']
+		self.lastSize 			= json[self.symbol]['lastSize']
+		self.lastID 			= json[self.symbol]['lastId']
+		self.openPrice 			= json[self.symbol]['openPrice']
+		self.highPrice 			= json[self.symbol]['highPrice']
+		self.lowPrice 			= json[self.symbol]['lowPrice']
+		self.closePrice 		= json[self.symbol]['closePrice']
+		self.netChange 			= json[self.symbol]['netChange']
+		self.totalVolume 		= json[self.symbol]['totalVolume']
+		self.quoteTime 			= json[self.symbol]['quoteTimeInLong']
+		self.tradeTime 			= json[self.symbol]['tradeTimeInLong']
+		self.mark 				= json[self.symbol]['mark']
+		self.marginable 		= json[self.symbol]['marginable']
+		self.shortable 			= json[self.symbol]['shortable']
+		self.volatility 		= json[self.symbol]['volatility']
+		self.digits 			= json[self.symbol]['digits']
+		self.week52High 		= json[self.symbol]['52WkHigh']
+		self.week52Low 			= json[self.symbol]['52WkLow']
+		self.peRatio 			= json[self.symbol]['peRatio']
+		self.divAmount 			= json[self.symbol]['divAmount']
+		self.divYield 			= json[self.symbol]['divYield']
+		self.divDate 			= json[self.symbol]['divDate']
+		self.regMarketLastPrice = json[self.symbol]['regularMarketLastPrice']
+		self.regMarketLastSize 	= json[self.symbol]['regularMarketLastSize']
+		self.regMarketNetChange = json[self.symbol]['regularMarketNetChange']
+		self.regMarketTradeTime = json[self.symbol]['regularMarketTradeTimeInLong']
+
+def GetQuoteType(symbol, raw):
+	return raw[symbol]['assetType']
