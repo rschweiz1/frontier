@@ -4,7 +4,6 @@ from copy import deepcopy
 import requests
 
 import quotes
-import orders
 import candles
 
 # Possible return value error codes.

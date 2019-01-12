@@ -58,7 +58,7 @@ def QueryCommand(tokens):
 	elif type == "movers":
 		if argc < 3:
 			print "Usage: "
-			QuoteHelpText()
+			helptext.QuoteHelpText()
 		else:
 			mkt = tokens[2]
 			if argc == 3:

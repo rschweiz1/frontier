@@ -1,0 +1,4 @@
+# Project Git Ignore File
+
+# Compiled Python Files
+*.pyc
