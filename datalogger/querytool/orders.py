@@ -1,7 +1,9 @@
+# Module is an abstraction of orders, which is the returned data structure when requesting order
+# information from the API.
 
 # Acts as a superclass to different order types. It contains the interface data all orders share. 
 class Order(object):
-	def __init__(self, order_data):
+	def __init__(self, json):
 		self.session = ""
 		self.duration = ""
 		self.orderType = ""
@@ -56,7 +58,9 @@ class Order(object):
 				self.time = ""
 			
 class OptionOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
@@ -71,7 +75,9 @@ class OptionOrder(Order):
 		self.optionAssetType = ""
 		
 class MutualFundOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
@@ -79,7 +85,9 @@ class MutualFundOrder(Order):
 		self.type = ""
 		
 class OptionOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
@@ -87,7 +95,9 @@ class OptionOrder(Order):
 		self.type = ""
 		
 class CashEquivOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
@@ -95,14 +105,18 @@ class CashEquivOrder(Order):
 		self.type = ""
 		
 class EquityOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
 		self.description = ""
 		
 class FixedIncomeOrder(Order):
-	def __init__(self, order_data):
+	def __init__(self, json):
+		Order.__init__(self, json)
+		
 		self.assetType = ""
 		self.cusip = ""
 		self.symbol = ""
@@ -110,33 +124,3 @@ class FixedIncomeOrder(Order):
 		self.maturityDate = ""
 		self.variableRate = 0
 		self.factor = 0
-
-# Class to encapsulate user preferences for a TD Ameritrade account.
-class UserPreferences(object):
-	def __init__(self):
-		self.expressTrading = False
-		self.directOptionsRouting = False
-		self.directEquityRouting = False
-		self.defaultEquityOrderLegInstr = ""
-		self.defaultEquityOrderType = ""
-		self.defaultEquityOrderPriceLinkType = ""
-		self.defaultEquityOrderDuration = ""
-		self.defaultEquityOrderMarketSession = ""
-		self.defaultEquityQuantity = 0
-		self.mutualFundTaxLotMethod = ""
-		self.optionTaxLotMethod = ""
-		self.equityTaxLotMethod = ""
-		self.defaultAdvancedToolLaunch = ""
-		self.authTokenTimeout = ""
-
-class Watchlist(object):
-	def __init__(self):
-		self.name = ""
-		self.watchlistID = ""
-		self.watchlistQuantity = 0
-		self.watchlistAvgPrice = -1.0
-		self.watchlistCommission = -1.0
-		self.watchlistPurchasedDate = ""
-		self.watchlistSymbol = ""
-		self.watchlistAssetType = ""
-		self.watchlistSequenceID = 0

@@ -1,7 +1,11 @@
-import argparse
+# Module is the top-level QueryTool class. It provides important global definitions, and
+# constructs and sends JSON data.
+from copy import deepcopy
 import requests
-import qtclassdef
+
 import quotes
+import orders
+import candles
 
 # Possible return value error codes.
 ERR_NULL_VALUE			= 400
@@ -89,37 +93,115 @@ class QueryTool(object):
 		print "Method Unimplemented"
 		return
 		
-	def SearchInstruments(self, apikey, symbol, projection):
+	def SearchInstruments(self, symbol, projection):
 		print "Method Unimplemented"
 		return
 		
-	def GetInstrument(self, cusip, apikey):
+	def GetInstrument(self, cusip):
 		print "Method Unimplemented"
 		return
+	
+	# Valid date strings are (1) yyyy-MM-dd (2) yyyy-MM-dd'T'HH:mm:ssz
+	def GetMarketHours(self, market, date):
+		print "Method Unimplemented"
+		return
+	
+	# Get top 10 (up or down) movers by value or percent for a particular market.
+	def GetMovers(self, market, direction='up', change='percent'):
+		path = API_CORE_PATH + API_MOVERS_SUFFIX
+		suffix = "/movers"
 		
-	def GetMarketHours(self, apikey, markets, date):
-		print "Method Unimplemented"
-		return
+		# Sterilize input text.
+		dir = direction.lower()
+		ch  = change.lower()
 		
-	def GetMovers(self, index, apikey, direction, change):
-		print "Method Unimplemented"
-		return
+		# Setup JSON parameters.
+		params = {  'apikey' : API_KEY,
+					'direction': direction,
+					'change' : change }
 		
-	def GetOptionChain(self, apikey, symbol, contractType, strikeCount, includeQuotes, strategy, interval, strike, range, fromDate, toDate, volatility, underlyingPrice, interestRate, daysToExp, expMonth, optionType):
-		print "Method Unimplemented"
-		return
+		# Construct full path and sent JSON GET request.
+		fullpath = path + market + suffix
+		temp = SendJSON(fullpath, params)
 		
-	def GetPriceHistory(self, symbol, apikey, periodType, period, frequencyType, frequency, endDate, startDate, extendedHours):
+		# Display character for change type.
+		if change == 'value':
+			type = 'U'
+		else:
+			type = '%'
+		
+		# Display all 10 movers.
+		ctx = len(temp)
+		for i in range(0, ctx):
+			print "-- [" + direction.upper() + "] --"
+			print "Symbol: " + temp[i]['symbol']
+			print "Description: " + temp[i]['description']
+			print "Change: " + str(temp[i]['change']) + type
+			print "Last: $" + str(temp[i]['last']) + " Volume: " + str(temp[i]['totalVolume'])
+			print "----------"
+		
+		return deepcopy(temp)
+		
+	def GetOptionChain(self, symbol, contractType, strikeCount, includeQuotes, strategy, interval, strike, range, fromDate, toDate, volatility, underlyingPrice, interestRate, daysToExp, expMonth, optionType):
 		print "Method Unimplemented"
 		return
+	
+	# Returns a list of Candle objects, unsorted, for the specified time frame.
+	def GetPriceHistory(self, symbol, periodType='day', period=2, frequencyType='minute', frequency=1, endDate=0, startDate=0, extendedHours=False):
+		path = API_CORE_PATH + API_PRICE_SUFFIX
+		suffix = "/pricehistory"
+		
+		# Sterilize the input text.
+		pt = periodType.lower()
+		p  = str(period)
+		ft = frequencyType.lower()
+		f  = str(frequency)
+		
+		# Setup JSON GET parameters.
+		params = {  'apikey' : API_KEY,
+					'periodType' : pt,
+					'period' : p,
+					'frequencyType' : ft,
+					'frequency' : f,
+					'needExtendedHoursData' : 'false' }
+		
+		# Add additional, option parameters.
+		if endDate != 0 and startDate < endDate:
+			params['endDate'] = endDate
+			params['startDate'] = startDate
+		if extendedHours == True:
+			params['needExtendedHoursData'] = 'true'
+
+		# Setup full API path and send JSON GET request.
+		fullpath = path + symbol + suffix
+		temp = SendJSON(fullpath, params)
+		
+		# If response was empty, something went wrong.
+		if not temp:
+			print "Invalid JSON parameter."
+		else:
+			numcandles = len(temp["candles"])
+			clist = []
+			
+			# Create a candle object for each piece of
+			# candle data recieved.
+			for i in range(0, numcandles):
+				c = candles.Candle(temp["candles"][i])
+				clist.append(c)
+				c.PrintAttributes()
+		
+		print "Retrieved " + str(numcandles) + " candles."
+		
+		return deepcopy(clist)
 		
 	def GetQuotes(self, symbols):
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
 		params = { 'apikey' : API_KEY }
 		
-		quotes = []
+		quote_array = []
 		
+		# Send a JSON request for each symbol requested.
 		for sym in symbols:
 			
 			# Construct full API path.
@@ -128,16 +210,26 @@ class QueryTool(object):
 			# Send JSON GET request.
 			temp = SendJSON(fullpath, params)
 			
-			# Get the quote type and create
-			# the applicable object.
-			type = quotes.GetQuoteType(sym, temp)
-			
-			if type == 'EQUITY':
-				obj = quotes.EquityQuote(temp)
+			# If response was empty, something went wrong.
+			if not temp:
+				print "Invalid symbol name."
+			else:
+				type = quotes.GetQuoteType(sym, temp)
 				
-				print obj.description
+				# Instantiate a Quote subclass specific
+				# to the quote type.
+				if type == 'EQUITY':
+					obj = quotes.EquityQuote(temp)
+					obj.PrintAttributes()
+					quote_array.append(obj)
+				elif type == 'MUTUAL_FUND':
+					obj = quotes.MutualFundQuote(temp)
+					obj.PrintAttributes()
+					quote_array.append(obj)
+				else:
+					print temp
 		
-		return
+		return deepcopy(quote_array)
 		
 	def GetTransaction(self, accountID, transactionID):
 		print "Method Unimplemented"
@@ -190,9 +282,19 @@ class QueryTool(object):
 	def UpdateWatchlist(self, accountID, watchlistID, watchlist):
 		print "Method Unimplemented"
 		return
-		
+
+# Send a JSON request given a URL address and JSON parameters.
 def SendJSON(address, parameters):
 	r = requests.get(url = address, params = parameters)
 	data = r.json()
 	
 	return data
+
+# Doesn't work.
+def QueryTool_SetAPIKey(key):
+	API_KEY = key
+	return
+
+# Return currently used API key.
+def QueryTool_GetAPIKey():
+	return API_KEY

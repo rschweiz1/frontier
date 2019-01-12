@@ -1,4 +1,5 @@
-import argparse
+# Module is an abstraction of quotes, which is the returned data structure when requesting
+# different types of realtime data from the market API.
 
 # This is a superclass for the subclasses following it; it acts as a master quote object.
 # The objects are initialized by passing JSON GET data retrieved from the API.
@@ -32,6 +33,14 @@ class MutualFundQuote(Quote):
 		self.divAmount 		= json[self.symbol]['divAmount']
 		self.divYield 		= json[self.symbol]['divYield']
 		self.divDate 		= json[self.symbol]['divDate']
+		
+	def PrintAttributes(self):
+		print "------------------------------------"
+		print self.symbol + "\n" + self.description + "\n"
+		print "Close: $" + str(self.closePrice) + "\tChange: " + str(self.netChange)
+		print "Volume: " + str(self.totalVolume) 
+		print "52 Wk High: $" + str(self.week52High) + "\t52 Wk Low: $" + str(self.week52Low)
+		print "------------------------------------"
 
 class FutureQuote(Quote):
 	def __init__(self, json):
@@ -259,5 +268,14 @@ class EquityQuote(Quote):
 		self.regMarketNetChange = json[self.symbol]['regularMarketNetChange']
 		self.regMarketTradeTime = json[self.symbol]['regularMarketTradeTimeInLong']
 
+	def PrintAttributes(self):
+		print "--------------------------------"
+		print self.symbol + "\n" + self.description + "\n"
+		print "Open: $" + str(self.openPrice) + "\t\tClose: $" + str(self.closePrice)
+		print "Low: $" + str(self.lowPrice) + "\t\tHigh: $" + str(self.highPrice)
+		print "Volume: " + str(self.totalVolume) + "\tPE Ratio: " + str(self.peRatio)
+		print "52 Wk High: $" + str(self.week52High) + "\t52 Wk Low: $" + str(self.week52Low)
+		print "--------------------------------"
+		
 def GetQuoteType(symbol, raw):
 	return raw[symbol]['assetType']
