@@ -39,10 +39,11 @@ NOTE: Brackets [ ] denote required arguments.
 
 + **Command**: ```markethours```  
 **Subcommands**: None  
-**Arguments**:  ```[market-type]```  
+**Arguments**:  ```[market-type] <date>```  
 **Description**: Displays market open/closed status.  
 **Examples**:  
 ```>> markethours FOREX```  
+```>> markethours EQUITY 2018-06-20```    
 ```>> markethours [EQUITY/OPTION/FUTURE/BOND/FOREX]```
 
 + **Command**: ```query```  

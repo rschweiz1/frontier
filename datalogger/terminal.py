@@ -3,7 +3,10 @@
 import argparse
 import sys
 
-# TODO Wrapper for QueryTool.GetMarketHours()
+# Usage: markethours [market] <date>
+#
+# Notes: [market] can be any one of: EQUITY, OPTION, FUTURE, BOND, FOREX
+#
 def MarketHoursCommand(tokens):
 	qt = query.QueryTool()
 	
