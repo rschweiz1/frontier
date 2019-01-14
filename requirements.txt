@@ -1,8 +1,6 @@
-jupyter
 matplotlib
 numpy
 pandas
-pandas-datareader
 scipy
 scikit-learn
-tensorflow-gpu
+tf-nightly-gpu
