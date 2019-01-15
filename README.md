@@ -13,3 +13,7 @@ Below is a list of instructions to get the codebase functional on your machine.
 2. Use `pip install --upgrade -r requirements.txt` to install latest dependencies in requirements file
 
 3. Download CUDA v10.0 library from [This Link](https://developer.nvidia.com/cuda-downloads) *(Note: CUDA v10.0 currently only works with tf-nightly-gpu)*
+
+4. Copy the 3 CUDNN files in this repository (bin, include, lib) into their respective CUDA paths. For a default installation, the three folders are located in C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0.
+
+5. You should now be able to compile machine learning models on your NVIDIA GPU. Run main.py in python to test the installation
