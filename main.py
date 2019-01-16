@@ -6,10 +6,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 import frontier as ft
 
-PATH = os.path.join(os.path.dirname(__file__), 'database', 'machine data.csv')
+PATH = os.path.join(os.path.dirname(__file__), 'frontier','features', 'machine data.csv')
 
-# retrieve onesource data
-# ft.OneSource().get()
 # load dataset
 dataset = ft.scrub(PATH)
 values = dataset.values
