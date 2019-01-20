@@ -5,6 +5,22 @@
 import argparse
 import sys
 
+def InstrumentsCommand(tokens):
+	
+	qt = query.QueryTool()
+	argc = len(tokens)
+	
+	if argc < 2:
+		print("Usage:")
+	else:
+		if argc == 2:
+			qt.SearchInstruments(tokens[1])
+		elif argc == 3:
+			qt.SearchInstruments(tokens[1], projection=tokens[2])
+		else:
+			print("Too many arguments.")
+	
+	return
 
 def MarketHoursCommand(tokens):
 	"""
@@ -30,56 +46,41 @@ def MarketHoursCommand(tokens):
 
 	return
 
+def QuoteCommand(tokens):
 
-def QueryCommand(tokens):
-	"""
-	Usage: query [subcommand] <subcommand-arguments>
-
-	Subcommands:
-			'quote'    : Returns market data from the specified ticker.
-			arguments:
-				[symbol] - Ticker symbol
-			examples:	(1) query quote AAPL
-
-			'movers'   : Returns top 10 moving tickers for a given market
-			arguments:
-				[market]		- $COMPX, $DJI, $SPX.X
-				<direction>		- up, down
-				<change-type>	- percent, value
-			examples: (1) query movers $COMPX	(2) query movers $DJI down value
-	"""
 	qt = query.QueryTool()
-
 	argc = len(tokens)
+	
+	if argc < 2:
+		print("Usage: ")
+		helptext.QuoteHelpText()
+	else:
+		sym = []
+		sym.append(tokens[1])
+		
+		qt.GetQuotes(sym)
 
-	# Type of query.
-	type = tokens[1]
-
-	if type == "quote":
-		if argc < 3:
-			print("Usage: ")
-			helptext.QuoteHelpText()
-		else:
-			s = []
-			s.append(tokens[2])
-
-			qt.GetQuotes(s)
-	elif type == "movers":
-		if argc < 3:
-			print("Usage: ")
-			helptext.QuoteHelpText()
-		else:
-			mkt = tokens[2]
-			if argc == 3:
-				qt.GetMovers(mkt)
-			elif argc == 4:
-				qt.GetMovers(mkt, direction=tokens[3])
-			elif argc == 5:
-				qt.GetMovers(mkt, direction=tokens[3], change=tokens[4])
-			else:
-				print("Too many arguments.")
 	return
+	
+def MoversCommand(tokens):
 
+	qt = query.QueryTool()
+	argc = len(tokens)
+	
+	if argc < 2:
+		print("Usage: ")
+	else:
+		mkt = tokens[1]
+		if argc == 2:
+			qt.GetMovers(mkt)
+		elif argc == 3:
+			qt.GetMovers(mkt, direction=tokens[2])
+		elif argc == 4:
+			qt.GetMovers(mkt, direction=tokens[2], change=tokens[3])
+		else:
+			print("Too many arguments.")
+			
+	return
 
 def PriceHistoryCommand(tokens):
 	"""
@@ -126,53 +127,22 @@ def PriceHistoryCommand(tokens):
 		else:
 			print("Too many arguments.")
 
-
-# TODO These don't really work.
-def AuthCommand(tokens):
-
-	argc = len(tokens)
-
-	if argc < 3:
-		print("Usage:")
-		helptext.AuthHelpText()
-	else:
-		sub  = tokens[1]
-		type = tokens[2]
-
-		if sub == "set" and type == "API_KEY":
-			key1 = raw_input("Enter new API key: ")
-			#type(key1)
-			key2 = raw_input("Retype new API key: ")
-			#type(key2)
-
-			if key1 != key2:
-				print("Error, key entires do not match.")
-			else:
-				query.QueryTool_SetAPIKey(key1)
-
-		elif sub == "get" and type == "API_KEY":
-			key = query.QueryTool_GetAPIKey()
-			print(key)
-		else:
-			print("Unrecognized command.")
-
-	return
-
-
 def Dispatch(tokens):
 	command = tokens[0]
 
 	# Interpret user command.
 	if command == "help":
 		helptext.HelpText()
-	elif command == "query":
-		QueryCommand(tokens)
+	elif command == "quote":
+		QuoteCommand(tokens)
 	elif command == "history":
 		PriceHistoryCommand(tokens)
 	elif command == "markethours":
 		MarketHoursCommand(tokens)
-	elif command == "auth":
-		AuthCommand(tokens)
+	elif command == "movers":
+		MoversCommand(tokens)
+	elif command == "instruments":
+		InstrumentsCommand(tokens)
 	else:
 		print("'" + command + "'" + " is not a valid command.")
 
@@ -181,7 +151,7 @@ def Dispatch(tokens):
 def Run():
 
 	# Wait for and read user input.
-	text = raw_input(">> ")
+	text = input(">> ")
 	type(text)
 
 	while text != "quit":
@@ -191,7 +161,7 @@ def Run():
 		Dispatch(tokens)
 
 		# Wait for and read user input.
-		text = raw_input(">> ")
+		text = input(">> ")
 		type(text)
 
 	print("Program Exit.")

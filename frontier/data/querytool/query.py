@@ -6,6 +6,7 @@ import datetime
 
 import quotes
 import candles
+import instruments
 
 # Possible return value error codes.
 ERR_NULL_VALUE			= 400
@@ -37,6 +38,7 @@ class QueryTool(object):
 		self.successfulQueries 	= 0
 		self.failedQueries		= 0
 
+	'''
 	def CancelOrder(self, accountID, orderID):
 		print("Method Unimplemented")
 		return
@@ -92,13 +94,37 @@ class QueryTool(object):
 	def PostAccessToken(self, grant_type, refresh_token, access_type, code, client_id, redirect_uri):
 		print("Method Unimplemented")
 		return
-
-	def SearchInstruments(self, symbol, projection):
-		print("Method Unimplemented")
-		return
-
+	
 	def GetInstrument(self, cusip):
 		print("Method Unimplemented")
+		return
+	'''
+	
+	def SearchInstruments(self, symbol, projection='fundamental'):
+		path = API_CORE_PATH + API_INSTRUMENT_SUFFIX
+		
+		params = { 'apikey' : API_KEY,
+				   'symbol' : symbol,
+				   'projection' : projection }
+				   
+		fullpath = path
+		json = SendJSON(fullpath, params)
+		
+		if not json:
+			print("Invalid JSON Parameter")
+			self.failedQueries += 1
+		else:
+			self.successfulQueries += 1
+			
+			if projection == 'fundamental':
+				tmp = instruments.Fundamental(json)
+			elif project == 'symbol-search':
+				tmp = instruments.Instrument(json)
+			else:
+				print("Invalid projection type.")
+			
+			print(tmp.symbol)
+		
 		return
 
 	# Valid date strings are (1) yyyy-MM-dd (2) yyyy-MM-dd'T'HH:mm:ssz
@@ -224,7 +250,7 @@ class QueryTool(object):
 		if not json:
 			print("Invalid JSON parameter.")
 			self.failedQueries		+= 1
-		elif 'error' in json.keys():
+		elif 'error' in list(json.keys()):
 			print("Error: " + json['error'])
 			self.failedQueries		+= 1
 		else:
@@ -243,6 +269,8 @@ class QueryTool(object):
 
 		return deepcopy(clist)
 
+	# Symbols is a list of symbols.
+	# Returns a list of quotes.
 	def GetQuotes(self, symbols):
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
@@ -267,8 +295,7 @@ class QueryTool(object):
 				self.successfulQueries	+= 1
 				type = quotes.GetQuoteType(sym, json)
 
-				# Instantiate a Quote subclass specific
-				# to the quote type.
+				# For each symbol returned...
 				if type == 'EQUITY':
 					obj = quotes.EquityQuote(json)
 					obj.PrintAttributes()
@@ -278,10 +305,11 @@ class QueryTool(object):
 					obj.PrintAttributes()
 					quote_array.append(obj)
 				else:
-					print(json
+					print(json)
 
 		return deepcopy(quote_array)
 
+	'''
 	def GetTransaction(self, accountID, transactionID):
 		print("Method Unimplemented")
 		return
@@ -333,6 +361,7 @@ class QueryTool(object):
 	def UpdateWatchlist(self, accountID, watchlistID, watchlist):
 		print("Method Unimplemented")
 		return
+	'''
 
 # Send a JSON request given a URL address and JSON parameters.
 def SendJSON(address, parameters):
@@ -341,11 +370,10 @@ def SendJSON(address, parameters):
 
 	return data
 
-# Doesn't work.
-def QueryTool_SetAPIKey(key):
-	API_KEY = key
+# Converts ms since epoch to a timestamp string
+def StampToString(stamp):
 	return
 
-# Return currently used API key.
-def QueryTool_GetAPIKey():
-	return API_KEY
+# Converts timestamp string to ms since epoch.
+def StringToStamp(string):
+	return

@@ -6,7 +6,7 @@
 class Quote(object):
 	def __init__(self, json):
 		self.type			= ""
-		self.symbol 		= json.keys()[0]
+		self.symbol 		= list(json.keys())[0]
 		self.description 	= json[self.symbol]['description']
 		self.exchange 		= json[self.symbol]['exchange']
 		self.exchangeName 	= json[self.symbol]['exchangeName']
@@ -115,7 +115,7 @@ class IndexQuote(Quote):
 	def __init__(self, json):
 		Quote.__init__(self, json)
 
-		self.type			= "IndexQuote"
+		self.type			= "Index"
 		self.lastPrice 		= json[self.symbol]['lastPrice']
 		self.openPrice 		= json[self.symbol]['openPrice']
 		self.highPrice 		= json[self.symbol]['highPrice']
