@@ -269,46 +269,67 @@ class QueryTool(object):
 
 		return deepcopy(clist)
 
-	# Symbols is a list of symbols.
-	# Returns a list of quotes.
 	def GetQuotes(self, symbols):
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
-		params = { 'apikey' : API_KEY }
 
+		# The API expects a list of symbols, comma delimited with
+		# no spaces. We set up each symbol here.
 		quote_array = []
+		symlist 	= (symbols[0]).split(',')
+		symstring   = ""
+		for s in symlist:
+			symstring += s + ","
+		
+		# Drop the trailing comma
+		symstring = symstring[:-1]
+		
+		fullpath = path + suffix
+		params = { 'apikey' : API_KEY,
+				   'symbol' : symstring}
 
-		# Send a JSON request for each symbol requested.
-		for sym in symbols:
+		# Send JSON Request
+		json = SendJSON(fullpath, params)
+		
+		if not json:
+			print("Invalid query.")
+			self.failedQueries += 1
+		else:
+			self.successfulQueries += 1
+		
+		# For each symbol requested, if a successful
+		# query was returned for it, create object
+		# and add it to the return list.
+		for s in symlist:
+			if s in list(json.keys()):
+				q 	 = json[s]
+				type = q['assetType']
 
-			# Construct full API path.
-			fullpath = path + sym + suffix
+				obj  = None
 
-			# Send JSON GET request.
-			json = SendJSON(fullpath, params)
-
-			# If response was empty, something went wrong.
-			if not json:
-				print("Invalid symbol name.")
-				self.failedQueries		+= 1
-			else:
-				self.successfulQueries	+= 1
-				type = quotes.GetQuoteType(sym, json)
-
-				# For each symbol returned...
 				if type == 'EQUITY':
-					obj = quotes.EquityQuote(json)
-					obj.PrintAttributes()
-					quote_array.append(obj)
-				elif type == 'MUTUAL_FUND':
-					obj = quotes.MutualFundQuote(json)
-					obj.PrintAttributes()
-					quote_array.append(obj)
+					obj = quotes.EquityQuote(json[s])
+					StampToString(obj.quoteTime)
+				elif type == 'FUTURE':
+					obj = quotes.FutureQuote(json[s])
+				elif type == 'MUTUTAL':
+					obj = quotes.MutualFundQuote(json[s])
+				elif type == 'INDEX':
+					obj = quotes.IndexQuote(json[s])
+				elif type == 'OPTION':
+					obj = quotes.OptionQuote(json[s])
+				elif type == 'FOREX':
+					obj = quotes.ForexQuote(json[s])
+				elif type == 'ETF':
+					obj = quotes.ETFQuote(json[s])
 				else:
-					print(json)
-
+					print("Received unrecognized quote type.")
+				
+				if obj != None:
+					quote_array.append(obj)
+			
 		return deepcopy(quote_array)
-
+		
 	'''
 	def GetTransaction(self, accountID, transactionID):
 		print("Method Unimplemented")
@@ -371,8 +392,92 @@ def SendJSON(address, parameters):
 	return data
 
 # Converts ms since epoch to a timestamp string
+# Format: Time:			"00:00:00"
+#		  Date			"00-00-0000" or "00/00/0000"
+#	      TimeDate:		"00-00-0000x00:00:00"
+SECONDS_PER_YEAR	= 31556926
+SECONDS_PER_DAY		= 86400
+SECONDS_PER_HOUR	= 3600
 def StampToString(stamp):
-	return
+	year 	= 1970
+	month 	= 1
+	day 	= 1
+	hour 	= 0
+	minute 	= 0
+	second 	= 0
+	string  = ""
+	
+	# Convert to seconds since epoch.
+	seconds = int(stamp) / 1000
+	
+	# Get years.
+	y = int(seconds / SECONDS_PER_YEAR)
+	year += y
+	seconds -= y * SECONDS_PER_YEAR
+	
+	# Next get days, because the number of days
+	# per month will vary.
+	d = int(seconds / SECONDS_PER_DAY)
+	seconds -= d * SECONDS_PER_DAY
+	
+	if d <= 31:
+		m = 0	# Jan (31)
+		d -= 0
+	elif d <= 59:
+		m = 1	# Feb (28)
+		d -= 31
+	elif d <= 90:
+		m = 2	# Mar (31)
+		d -= 59
+	elif d <= 120:
+		m = 3	# Apr (30)
+		d -= 90
+	elif d <= 151:
+		m = 4	# May (31)
+		d -= 120
+	elif d <= 181:
+		m = 5	# June (30)
+		d -= 150
+	elif d <= 212:
+		m = 6	# July (31)
+		d -= 181
+	elif d <= 243:
+		m = 7	# Aug (31)
+		d -= 212
+	elif d <= 273:
+		m = 8	# Sept (30)
+		d -= 243
+	elif d <= 304:
+		m = 9	# Oct (31)
+		d -= 273
+	elif d <= 334:
+		m = 10	# Nov (30)
+		d -= 304
+	elif d <= 365:
+		m = 11	# Dec (31)
+		d -= 334
+	else:
+		print("ERROR")
+
+	month += m
+	day += d
+	
+	# Get hours.
+	h = int(seconds / SECONDS_PER_HOUR)
+	hour += h
+	seconds -= h * SECONDS_PER_HOUR
+	
+	# Get minutes.
+	m = int(seconds / 60)
+	minute += m
+	seconds -= m * 60
+	
+	# Add seconds
+	second += int(seconds)
+	
+	string = str(month) + "/" + str(day) + "/" + str(year) + "x" + str(hour) + ":" + str(minute) + ":" + str(second)
+
+	return string
 
 # Converts timestamp string to ms since epoch.
 def StringToStamp(string):
