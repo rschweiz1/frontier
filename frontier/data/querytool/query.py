@@ -36,6 +36,21 @@ class QueryTool(object):
 	def __init__(self):
 		self.successfulQueries 	= 0
 		self.failedQueries		= 0
+		self._API_KEY			= API_KEY
+
+	@property
+	def API_KEY(self):
+		""" Dynamic API_KEY attribute
+		"""
+		return self._API_KEY
+
+	@API_KEY.setter
+	def API_KEY(self, value):
+		self._API_KEY = value
+
+	@API_KEY.deleter
+	def API_KEY(self):
+		del self._API_KEY
 
 	def CancelOrder(self, accountID, orderID):
 		print("Method Unimplemented")
@@ -106,14 +121,14 @@ class QueryTool(object):
 		path = API_CORE_PATH + API_MARKETHOURS_SUFFIX
 		suffix = "/hours"
 
-		params = { 'apikey' : API_KEY }
+		params = { 'apikey' : self.API_KEY }
 
 		if date != '0000-00-00':
 			params['date'] = date
 
 		# Construct full path and sent JSON GET request.
 		fullpath = path + market.upper() + suffix
-		json = SendJSON(fullpath, params)
+		json = self.SendJSON(fullpath, params)
 
 		if not json:
 			print("Invalid JSON parameter.")
@@ -146,14 +161,14 @@ class QueryTool(object):
 		ch  = change.lower()
 
 		# Setup JSON parameters.
-		params = {  'apikey' : API_KEY,
+		params = {  'apikey' : self.API_KEY,
 					'direction': direction,
 					'change' : change }
 
 
 		# Construct full path and sent JSON GET request.
 		fullpath = path + market + suffix
-		json = SendJSON(fullpath, params)
+		json = self.SendJSON(fullpath, params)
 
 		if not json:
 			print("Invalid JSON parameter.")
@@ -195,7 +210,7 @@ class QueryTool(object):
 		f  = str(frequency)
 
 		# Setup JSON GET parameters.
-		params = {  'apikey' : API_KEY,
+		params = {  'apikey' : self.API_KEY,
 					'periodType' : pt,
 					'frequencyType' : ft,
 					'frequency' : f,
@@ -218,7 +233,7 @@ class QueryTool(object):
 
 		# Setup full API path and send JSON GET request.
 		fullpath = path + symbol + suffix
-		json = SendJSON(fullpath, params)
+		json = self.SendJSON(fullpath, params)
 
 		# If response was empty, something went wrong.
 		if not json:
@@ -246,7 +261,7 @@ class QueryTool(object):
 	def GetQuotes(self, symbols):
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
-		params = { 'apikey' : API_KEY }
+		params = { 'apikey' : self.API_KEY }
 
 		quote_array = []
 
@@ -257,7 +272,7 @@ class QueryTool(object):
 			fullpath = path + sym + suffix
 
 			# Send JSON GET request.
-			json = SendJSON(fullpath, params)
+			json = self.SendJSON(fullpath, params)
 
 			# If response was empty, something went wrong.
 			if not json:
@@ -278,7 +293,7 @@ class QueryTool(object):
 					obj.PrintAttributes()
 					quote_array.append(obj)
 				else:
-					print(json
+					print(json)
 
 		return deepcopy(quote_array)
 
@@ -334,18 +349,9 @@ class QueryTool(object):
 		print("Method Unimplemented")
 		return
 
-# Send a JSON request given a URL address and JSON parameters.
-def SendJSON(address, parameters):
-	r = requests.get(url = address, params = parameters)
-	data = r.json()
+	# Send a JSON request given a URL address and JSON parameters.
+	def SendJSON(self, address, parameters):
+		r = requests.get(url = address, params = parameters)
+		return r.json()
 
-	return data
-
-# Doesn't work.
-def QueryTool_SetAPIKey(key):
-	API_KEY = key
-	return
-
-# Return currently used API key.
-def QueryTool_GetAPIKey():
-	return API_KEY
+a = QueryTool()
