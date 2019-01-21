@@ -34,6 +34,12 @@ API_WATCHLIST_SUFFIX 	= "accounts/"
 # to the query in the API.
 class QueryTool(object):
 	def __init__(self):
+		""" Query Object Constructor
+		Attributes:
+			successfulQueries (int):    Number of successful queries
+			failedQueries (int):        Number of failed queries
+			_API_KEY (string):          TD Ameritrade API key
+		"""
 		self.successfulQueries 	= 0
 		self.failedQueries		= 0
 		self._API_KEY			= API_KEY
@@ -259,6 +265,14 @@ class QueryTool(object):
 		return deepcopy(clist)
 
 	def GetQuotes(self, symbols):
+		""" Get Quotes from Tickers
+
+		Args:
+			symbols (List of Strings): Ticker symbols to quote
+
+		Returns:
+			List of Quote Objects
+		"""
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
 		params = { 'apikey' : self.API_KEY }
@@ -349,9 +363,8 @@ class QueryTool(object):
 		print("Method Unimplemented")
 		return
 
-	# Send a JSON request given a URL address and JSON parameters.
 	def SendJSON(self, address, parameters):
+		""" Send a JSON request given a URL address and JSON parameters
+		"""
 		r = requests.get(url = address, params = parameters)
 		return r.json()
-
-a = QueryTool()
