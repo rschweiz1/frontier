@@ -134,7 +134,7 @@ class QueryTool(object):
 
 		# Construct full path and sent JSON GET request.
 		fullpath = path + market.upper() + suffix
-		json = self.SendJSON(fullpath, params)
+		json = SendJSON(fullpath, params)
 
 		if not json:
 			print("Invalid JSON parameter.")
@@ -174,7 +174,7 @@ class QueryTool(object):
 
 		# Construct full path and sent JSON GET request.
 		fullpath = path + market + suffix
-		json = self.SendJSON(fullpath, params)
+		json = SendJSON(fullpath, params)
 
 		if not json:
 			print("Invalid JSON parameter.")
@@ -239,7 +239,7 @@ class QueryTool(object):
 
 		# Setup full API path and send JSON GET request.
 		fullpath = path + symbol + suffix
-		json = self.SendJSON(fullpath, params)
+		json = SendJSON(fullpath, params)
 
 		# If response was empty, something went wrong.
 		if not json:
@@ -286,7 +286,7 @@ class QueryTool(object):
 			fullpath = path + sym + suffix
 
 			# Send JSON GET request.
-			json = self.SendJSON(fullpath, params)
+			json = SendJSON(fullpath, params)
 
 			# If response was empty, something went wrong.
 			if not json:
@@ -363,8 +363,8 @@ class QueryTool(object):
 		print("Method Unimplemented")
 		return
 
-	def SendJSON(self, address, parameters):
-		""" Send a JSON request given a URL address and JSON parameters
-		"""
-		r = requests.get(url = address, params = parameters)
-		return r.json()
+def SendJSON(address, parameters):
+    """ Send a JSON request given a URL address and JSON parameters
+    """
+    r = requests.get(url = address, params = parameters)
+    return r.json()
