@@ -34,8 +34,29 @@ API_WATCHLIST_SUFFIX 	= "accounts/"
 # to the query in the API.
 class QueryTool(object):
 	def __init__(self):
+		""" Query Object Constructor
+		Attributes:
+			successfulQueries (int):    Number of successful queries
+			failedQueries (int):        Number of failed queries
+			_API_KEY (string):          TD Ameritrade API key
+		"""
 		self.successfulQueries 	= 0
 		self.failedQueries		= 0
+		self._API_KEY			= API_KEY
+
+	@property
+	def API_KEY(self):
+		""" Dynamic API_KEY attribute
+		"""
+		return self._API_KEY
+
+	@API_KEY.setter
+	def API_KEY(self, value):
+		self._API_KEY = value
+
+	@API_KEY.deleter
+	def API_KEY(self):
+		del self._API_KEY
 
 	def CancelOrder(self, accountID, orderID):
 		print("Method Unimplemented")
@@ -106,7 +127,7 @@ class QueryTool(object):
 		path = API_CORE_PATH + API_MARKETHOURS_SUFFIX
 		suffix = "/hours"
 
-		params = { 'apikey' : API_KEY }
+		params = { 'apikey' : self.API_KEY }
 
 		if date != '0000-00-00':
 			params['date'] = date
@@ -146,7 +167,7 @@ class QueryTool(object):
 		ch  = change.lower()
 
 		# Setup JSON parameters.
-		params = {  'apikey' : API_KEY,
+		params = {  'apikey' : self.API_KEY,
 					'direction': direction,
 					'change' : change }
 
@@ -195,7 +216,7 @@ class QueryTool(object):
 		f  = str(frequency)
 
 		# Setup JSON GET parameters.
-		params = {  'apikey' : API_KEY,
+		params = {  'apikey' : self.API_KEY,
 					'periodType' : pt,
 					'frequencyType' : ft,
 					'frequency' : f,
@@ -244,9 +265,17 @@ class QueryTool(object):
 		return deepcopy(clist)
 
 	def GetQuotes(self, symbols):
+		""" Get Quotes from Tickers
+
+		Args:
+			symbols (List of Strings): Ticker symbols to quote
+
+		Returns:
+			List of Quote Objects
+		"""
 		path   = API_CORE_PATH + API_QUOTE_SUFFIX
 		suffix = "/quotes"
-		params = { 'apikey' : API_KEY }
+		params = { 'apikey' : self.API_KEY }
 
 		quote_array = []
 
@@ -278,7 +307,7 @@ class QueryTool(object):
 					obj.PrintAttributes()
 					quote_array.append(obj)
 				else:
-					print(json
+					print(json)
 
 		return deepcopy(quote_array)
 
@@ -334,18 +363,8 @@ class QueryTool(object):
 		print("Method Unimplemented")
 		return
 
-# Send a JSON request given a URL address and JSON parameters.
 def SendJSON(address, parameters):
-	r = requests.get(url = address, params = parameters)
-	data = r.json()
-
-	return data
-
-# Doesn't work.
-def QueryTool_SetAPIKey(key):
-	API_KEY = key
-	return
-
-# Return currently used API key.
-def QueryTool_GetAPIKey():
-	return API_KEY
+    """ Send a JSON request given a URL address and JSON parameters
+    """
+    r = requests.get(url = address, params = parameters)
+    return r.json()

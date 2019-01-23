@@ -6,11 +6,17 @@
 class Quote(object):
 	def __init__(self, json):
 		self.type			= ""
-		self.symbol 		= json.keys()[0]
+		self.symbol 		= self.getsymbol(json)
 		self.description 	= json[self.symbol]['description']
 		self.exchange 		= json[self.symbol]['exchange']
 		self.exchangeName 	= json[self.symbol]['exchangeName']
 		self.securityStatus = json[self.symbol]['securityStatus']
+
+	def getsymbol(self, json):
+		try:
+			return next(iter(json.keys()))
+		except:
+			print('Could not find Symbol')
 
 	def DumpAttributes(self):
 		for attr in self.__dict__.keys():
