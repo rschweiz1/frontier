@@ -1,0 +1,8 @@
+matplotlib
+numpy
+pandas
+scipy
+scikit-learn
+tensorflow-gpu
+pyomo
+xlrd
