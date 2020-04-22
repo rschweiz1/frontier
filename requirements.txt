@@ -3,4 +3,5 @@ numpy
 pandas
 scipy
 scikit-learn
-tf-nightly-gpu
+tensorflow-gpu
+pyomo
