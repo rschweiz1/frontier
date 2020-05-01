@@ -3,5 +3,5 @@ numpy
 pandas
 scipy
 scikit-learn
-tensorflow-gpu
+tensorflow
 pyomo
