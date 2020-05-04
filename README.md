@@ -12,8 +12,10 @@ Below is a list of instructions to get the codebase functional on your machine.
 
 3. Use `pip install --upgrade -r requirements.txt` to install latest dependencies in requirements file.
 
-4. Download [CUDA v10.1 library](https://developer.nvidia.com/cuda-toolkit-archive)
+4. Make sure you have [Microsoft Visual C++ Redistributable for Visual Studio 2015-2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
-5. If you do not have an NVIDIA developer account you will need to make one to download [CUDNN for CUDA 10.1](https://developer.nvidia.com/rdp/cudnn-download). Copy the 3 CUDNN files (bin, include, lib) into their respective CUDA paths. For a default installation, the three folders are located in C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1.
+5. For GPU support, Download [CUDA v10.1 library](https://developer.nvidia.com/cuda-toolkit-archive)
 
-6. You should now be able to compile machine learning models on your NVIDIA GPU. Run main.py in python to test the installation.
+6. If you do not have an NVIDIA developer account you will need to make one to download [CUDNN for CUDA 10.1](https://developer.nvidia.com/rdp/cudnn-download). Copy the 3 CUDNN files (bin, include, lib) into their respective CUDA paths. For a default installation, the three folders are located in C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1.
+
+7. You should now be able to compile machine learning models on your NVIDIA GPU. Run main.py in python to test the installation.
